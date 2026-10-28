@@ -11,9 +11,9 @@ CREATE TABLE partido (
     estado              ENUM('programado', 'jugado', 'postergado', 'cancelado') NOT NULL DEFAULT 'programado',
     CHECK (numero_fecha >= 1),
     CHECK (id_equipo_local <> id_equipo_visitante),
-    FOREIGN KEY (id_torneo)           REFERENCES torneo(id_torneo),
-    FOREIGN KEY (id_equipo_local)     REFERENCES equipo(id_equipo),
-    FOREIGN KEY (id_equipo_visitante) REFERENCES equipo(id_equipo),
-    FOREIGN KEY (id_turno)            REFERENCES turno(id_turno),
-    FOREIGN KEY (nombre_cancha, id_complejo) REFERENCES cancha(nombre_cancha, id_complejo)
+    FOREIGN KEY (id_torneo)                      REFERENCES torneo(id_torneo),
+    FOREIGN KEY (id_equipo_local, id_torneo)     REFERENCES equipo(id_equipo, id_torneo),
+    FOREIGN KEY (id_equipo_visitante, id_torneo) REFERENCES equipo(id_equipo, id_torneo),
+    FOREIGN KEY (id_turno)                       REFERENCES turno(id_turno),
+    FOREIGN KEY (nombre_cancha, id_complejo)     REFERENCES cancha(nombre_cancha, id_complejo)
 );
