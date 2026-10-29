@@ -6,6 +6,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root1234
       MYSQL_DATABASE: torneo
+      TZ: America/Montevideo
     ports:
       - "3306:3306"
     volumes:
