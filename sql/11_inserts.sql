@@ -22,15 +22,15 @@ INSERT INTO turno (id_turno, hora_inicio, hora_fin) VALUES
 
 -- Complejos deportivos
 INSERT INTO complejo (id_complejo, nombre, direccion, departamento) VALUES
-    (1, 'Complejo Pocitos Fútbol 5', 'Av. Brasil 2850', 'Montevideo'),
-    (2, 'Complejo del Prado', 'Av. Agraciada 4100', 'Montevideo');
+    (1, 'Malvín 5', 'Alejandro Gallinal 2111', 'Montevideo'),
+    (2, 'El Clásico Fútbol 5', 'Alejandro Gallinal 2014', 'Montevideo');
 
--- Canchas (la clave es nombre_cancha + id_complejo: los dos complejos tienen una 'Cancha 1')
+-- Canchas (la clave es nombre_cancha + id_complejo: los dos complejos tienen una 'Camp Nou' y una 'Gran Parque Central')
 INSERT INTO cancha (nombre_cancha, id_complejo, superficie, techada) VALUES
-    ('Cancha 1', 1, 'sintetico', FALSE),
-    ('Cancha 2', 1, 'sintetico', TRUE),
-    ('Cancha 1', 2, 'parquet',   TRUE),
-    ('Cancha 2', 2, 'sintetico', FALSE);
+    ('Camp Nou', 1, 'sintetico', TRUE),
+    ('Gran Parque Central', 1, 'sintetico', FALSE),
+    ('Camp Nou', 2, 'parquet',   TRUE),
+    ('Gran Parque Central', 2, 'sintetico', TRUE);
 
 -- Torneo: se crea en 'inscripcion' para poder cargar los planteles,
 -- y al final del script pasa a 'en curso'
