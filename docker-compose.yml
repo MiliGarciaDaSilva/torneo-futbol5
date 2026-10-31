@@ -12,6 +12,38 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d:ro
+    # Queda "healthy" recién cuando terminaron los scripts de sql/ (el usuario app_login se crea en el 16)
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "127.0.0.1", "-uapp_login", "-plogin1234", "-e", "SELECT 1 FROM torneo.login LIMIT 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  api:
+    build: ./backend
+    container_name: torneo_api
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      TZ: America/Montevideo
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: torneo_frontend
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
 
 volumes:
   mysql_data:
