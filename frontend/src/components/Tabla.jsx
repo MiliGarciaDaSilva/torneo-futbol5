@@ -5,7 +5,7 @@
 export default function Tabla({ columnas, filas, acciones }) {
   if (filas.length === 0) return <p>No hay datos para mostrar.</p>
 
-  const cols = columnas ?? Object.keys(filas[0]).map((campo) => ({ campo, titulo: campo }))
+  const cols = columnas ?? Object.keys(filas[0]).map((campo) => ({ campo, titulo: campo.replaceAll('_', ' ') }))
 
   return (
     <div className="overflow-auto">
@@ -22,7 +22,7 @@ export default function Tabla({ columnas, filas, acciones }) {
           {filas.map((fila, i) => (
             <tr key={i}>
               {cols.map((c) => (
-                <td key={c.campo}>{String(fila[c.campo] ?? '')}</td>
+                <td key={c.campo}>{mostrar(fila[c.campo])}</td>
               ))}
               {acciones && <td>{acciones(fila)}</td>}
             </tr>
@@ -31,4 +31,10 @@ export default function Tabla({ columnas, filas, acciones }) {
       </table>
     </div>
   )
+}
+
+function mostrar(valor) {
+  if (valor === true) return 'Sí'
+  if (valor === false) return 'No'
+  return String(valor ?? '')
 }

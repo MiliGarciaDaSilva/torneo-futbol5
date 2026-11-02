@@ -4,7 +4,10 @@ import { ADMIN, PLANILLERO, useAuth } from '../auth.jsx'
 // Opciones del menú y qué roles las ven
 const MENU = [
   { ruta: '/', texto: 'Inicio', roles: [ADMIN, PLANILLERO] },
+  { ruta: '/torneos', texto: 'Torneos', roles: [ADMIN] },
+  { ruta: '/jugadores', texto: 'Jugadores', roles: [ADMIN] },
   { ruta: '/complejos', texto: 'Complejos', roles: [ADMIN] },
+  { ruta: '/reportes', texto: 'Reportes', roles: [ADMIN] },
 ]
 
 export default function Layout() {

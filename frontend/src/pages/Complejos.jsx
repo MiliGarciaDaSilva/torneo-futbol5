@@ -1,7 +1,9 @@
 // ABM de ejemplo: las demás pantallas de ABM se arman copiando esta.
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { api } from '../api.js'
+import Formulario from '../components/Formulario.jsx'
 import Tabla from '../components/Tabla.jsx'
+import { useDatos } from '../useDatos.js'
 
 const DEPARTAMENTOS = [
   'Artigas', 'Canelones', 'Cerro Largo', 'Colonia', 'Durazno', 'Flores', 'Florida',
@@ -9,55 +11,29 @@ const DEPARTAMENTOS = [
   'Salto', 'San José', 'Soriano', 'Tacuarembó', 'Treinta y Tres',
 ]
 
-const VACIO = { nombre: '', direccion: '', departamento: '' }
+const CAMPOS = [
+  { nombre: 'nombre', etiqueta: 'Nombre', requerido: true, maxLength: 100 },
+  { nombre: 'direccion', etiqueta: 'Dirección', requerido: true, maxLength: 200 },
+  {
+    nombre: 'departamento', etiqueta: 'Departamento', tipo: 'select', requerido: true,
+    opciones: DEPARTAMENTOS.map((d) => ({ valor: d, texto: d })),
+  },
+]
 
 export default function Complejos() {
-  const [complejos, setComplejos] = useState([])
-  const [form, setForm] = useState(VACIO)
-  const [editando, setEditando] = useState(null) // id del complejo que se está editando; null = alta
+  const { datos: complejos, error: errorCarga, recargar } = useDatos('/complejos')
+  const [editando, setEditando] = useState(null) // complejo que se está editando; null = alta
   const [error, setError] = useState('')
 
-  async function cargar() {
-    try {
-      setComplejos(await api('/complejos'))
-    } catch (err) {
-      setError(err.message)
+  // Si el backend rechaza algo, el error lo muestra el formulario
+  async function guardar(valores) {
+    if (editando) {
+      await api(`/complejos/${editando.id_complejo}`, { method: 'PUT', body: valores })
+    } else {
+      await api('/complejos', { method: 'POST', body: valores })
     }
-  }
-
-  useEffect(() => {
-    cargar()
-  }, [])
-
-  function cambiar(e) {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  function limpiar() {
-    setForm(VACIO)
     setEditando(null)
-    setError('')
-  }
-
-  async function guardar(e) {
-    e.preventDefault()
-    setError('')
-    try {
-      if (editando) {
-        await api(`/complejos/${editando}`, { method: 'PUT', body: form })
-      } else {
-        await api('/complejos', { method: 'POST', body: form })
-      }
-      limpiar()
-      cargar()
-    } catch (err) {
-      setError(err.message)
-    }
-  }
-
-  function editar(complejo) {
-    setEditando(complejo.id_complejo)
-    setForm({ nombre: complejo.nombre, direccion: complejo.direccion, departamento: complejo.departamento })
+    recargar()
   }
 
   async function borrar(complejo) {
@@ -65,7 +41,7 @@ export default function Complejos() {
     setError('')
     try {
       await api(`/complejos/${complejo.id_complejo}`, { method: 'DELETE' })
-      cargar()
+      recargar()
     } catch (err) {
       setError(err.message)
     }
@@ -75,37 +51,16 @@ export default function Complejos() {
     <>
       <h2>Complejos deportivos</h2>
 
-      <form onSubmit={guardar}>
-        <fieldset className="grid">
-          <label>
-            Nombre
-            <input name="nombre" required maxLength={100} value={form.nombre} onChange={cambiar} />
-          </label>
-          <label>
-            Dirección
-            <input name="direccion" required maxLength={200} value={form.direccion} onChange={cambiar} />
-          </label>
-          <label>
-            Departamento
-            <select name="departamento" required value={form.departamento} onChange={cambiar}>
-              <option value="" disabled>
-                Elegí uno
-              </option>
-              {DEPARTAMENTOS.map((d) => (
-                <option key={d}>{d}</option>
-              ))}
-            </select>
-          </label>
-        </fieldset>
-        {error && <p className="error">{error}</p>}
-        <button type="submit">{editando ? 'Guardar cambios' : 'Agregar complejo'}</button>{' '}
-        {editando && (
-          <button type="button" className="secondary" onClick={limpiar}>
-            Cancelar
-          </button>
-        )}
-      </form>
+      <Formulario
+        key={editando?.id_complejo ?? 'alta'}
+        campos={CAMPOS}
+        inicial={editando}
+        onGuardar={guardar}
+        onCancelar={() => setEditando(null)}
+        textoAlta="Agregar complejo"
+      />
 
+      {(errorCarga || error) && <p className="error">{errorCarga || error}</p>}
       <Tabla
         columnas={[
           { campo: 'nombre', titulo: 'Nombre' },
@@ -115,7 +70,7 @@ export default function Complejos() {
         filas={complejos}
         acciones={(complejo) => (
           <>
-            <button className="secondary" onClick={() => editar(complejo)}>
+            <button className="secondary" onClick={() => setEditando(complejo)}>
               Editar
             </button>
             <button className="contrast" onClick={() => borrar(complejo)}>
