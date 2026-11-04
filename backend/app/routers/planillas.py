@@ -1,10 +1,38 @@
-from fastapi import APIRouter, Depends
+from typing import Literal
+
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.auth import ADMIN, PLANILLERO, get_db, requiere_rol
 from app.routers.partidos import obtener
 
 router = APIRouter(prefix="/partidos", tags=["planillas"])
 logueados = [Depends(requiere_rol(ADMIN, PLANILLERO))]
+
+# Las reglas (partido jugado, jugador suspendido, solo jugadores de la planilla, 48 horas) las revisan
+# los triggers de la base; si alguna falla, errores.py devuelve el mensaje del trigger con un 400.
+
+
+class PlanillaIn(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    ci_jugador: str = Field(min_length=1, max_length=15)
+
+
+class GolIn(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    ci_jugador: str = Field(min_length=1, max_length=15)
+    minuto: int = Field(ge=1, le=60)
+    autogol: bool = False
+
+
+class TarjetaIn(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    ci_jugador: str = Field(min_length=1, max_length=15)
+    minuto: int = Field(ge=1, le=60)
+    color: Literal["amarilla", "roja"]
 
 
 @router.get("/{id_partido}/planilla", dependencies=logueados)
@@ -80,3 +108,69 @@ def ver_planilla(id_partido: int, db=Depends(get_db)):
         "goles": goles,
         "tarjetas": tarjetas,
     }
+
+
+@router.post("/{id_partido}/planilla", status_code=201, dependencies=logueados)
+def cargar_planilla(id_partido: int, datos: PlanillaIn, db=Depends(get_db)):
+    partido = obtener(id_partido, db)
+
+    # El equipo del jugador sale de su plantel: tiene que ser el local o el visitante
+    jugador = db.uno(
+        "SELECT id_equipo FROM equipo_jugador_torneo WHERE ci_jugador = %s AND id_equipo IN (%s, %s)",
+        (datos.ci_jugador, partido["id_equipo_local"], partido["id_equipo_visitante"]),
+    )
+    if jugador is None:
+        raise HTTPException(400, "Ese jugador no es del plantel de ninguno de los dos equipos")
+
+    db.ejecutar(
+        "INSERT INTO planilla_partido (id_partido, ci_jugador, id_equipo) VALUES (%s, %s, %s)",
+        (id_partido, datos.ci_jugador, jugador["id_equipo"]),
+    )
+    return {"id_partido": id_partido, "ci_jugador": datos.ci_jugador, "id_equipo": jugador["id_equipo"]}
+
+
+@router.delete("/{id_partido}/planilla/{ci_jugador}", status_code=204, dependencies=logueados)
+def quitar_de_planilla(id_partido: int, ci_jugador: str, db=Depends(get_db)):
+    _, filas = db.ejecutar(
+        "DELETE FROM planilla_partido WHERE id_partido = %s AND ci_jugador = %s",
+        (id_partido, ci_jugador),
+    )
+    if filas == 0:
+        raise HTTPException(404, "Ese jugador no está en la planilla de este partido")
+
+
+@router.post("/{id_partido}/goles", status_code=201, dependencies=logueados)
+def cargar_gol(id_partido: int, datos: GolIn, db=Depends(get_db)):
+    id_gol, _ = db.ejecutar(
+        "INSERT INTO gol (id_partido, ci_jugador, minuto, autogol) VALUES (%s, %s, %s, %s)",
+        (id_partido, datos.ci_jugador, datos.minuto, datos.autogol),
+    )
+    return {"id_gol": id_gol, "id_partido": id_partido, **datos.model_dump()}
+
+
+@router.delete("/{id_partido}/goles/{id_gol}", status_code=204, dependencies=logueados)
+def borrar_gol(id_partido: int, id_gol: int, db=Depends(get_db)):
+    _, filas = db.ejecutar("DELETE FROM gol WHERE id_gol = %s AND id_partido = %s", (id_gol, id_partido))
+    if filas == 0:
+        raise HTTPException(404, "No existe ese gol en este partido")
+
+
+@router.post("/{id_partido}/tarjetas", status_code=201, dependencies=logueados)
+def cargar_tarjeta(id_partido: int, datos: TarjetaIn, db=Depends(get_db)):
+    # La sanción (roja o 3 amarillas) la crea sola un trigger de la base
+    id_tarjeta, _ = db.ejecutar(
+        "INSERT INTO tarjeta (id_partido, ci_jugador, minuto, color) VALUES (%s, %s, %s, %s)",
+        (id_partido, datos.ci_jugador, datos.minuto, datos.color),
+    )
+    return {"id_tarjeta": id_tarjeta, "id_partido": id_partido, **datos.model_dump()}
+
+
+@router.delete("/{id_partido}/tarjetas/{id_tarjeta}", status_code=204, dependencies=logueados)
+def borrar_tarjeta(id_partido: int, id_tarjeta: int, db=Depends(get_db)):
+    # Si la tarjeta generó una sanción, la base la borra junto con la tarjeta (ON DELETE CASCADE)
+    _, filas = db.ejecutar(
+        "DELETE FROM tarjeta WHERE id_tarjeta = %s AND id_partido = %s",
+        (id_tarjeta, id_partido),
+    )
+    if filas == 0:
+        raise HTTPException(404, "No existe esa tarjeta en este partido")
