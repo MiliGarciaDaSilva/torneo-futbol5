@@ -5,6 +5,8 @@ import Complejos from './pages/Complejos.jsx'
 import Inicio from './pages/Inicio.jsx'
 import Jugadores from './pages/Jugadores.jsx'
 import Login from './pages/Login.jsx'
+import Partidos from './pages/Partidos.jsx'
+import Planilla from './pages/Planilla.jsx'
 import Reportes from './pages/Reportes.jsx'
 import Torneos from './pages/Torneos.jsx'
 
@@ -32,6 +34,8 @@ export default function App() {
         }
       >
         <Route index element={<Inicio />} />
+        <Route path="partidos" element={<Partidos />} />
+        <Route path="partidos/:id/planilla" element={<Planilla />} />
         <Route path="torneos" element={<SoloAdmin><Torneos /></SoloAdmin>} />
         <Route path="jugadores" element={<SoloAdmin><Jugadores /></SoloAdmin>} />
         <Route path="complejos" element={<SoloAdmin><Complejos /></SoloAdmin>} />

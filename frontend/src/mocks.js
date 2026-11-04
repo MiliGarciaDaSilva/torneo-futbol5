@@ -58,9 +58,22 @@ const db = {
     { id_partido: 13, id_torneo: 1, numero_fecha: 5, id_equipo_local: 5, id_equipo_visitante: 1,
       dia: '2026-11-11', id_turno: 2, nombre_cancha: 'Camp Nou', id_complejo: 2, estado: 'programado' },
   ],
-  planilla: [], // { id_partido, ci_jugador, id_equipo }
-  goles: [], // { id_gol, id_partido, ci_jugador, minuto, autogol }
-  tarjetas: [], // { id_tarjeta, id_partido, ci_jugador, minuto, color }
+  // El partido 10 viene con la planilla ya cargada, para poder ver la pantalla con datos
+  planilla: [ // { id_partido, ci_jugador, id_equipo }
+    ...['45000001', '45000038', '45000075', '45000112', '45000186'].map((ci) => ({ id_partido: 10, ci_jugador: ci, id_equipo: 1 })),
+    ...['45005037', '45005074', '45005111', '45005148', '45005185'].map((ci) => ({ id_partido: 10, ci_jugador: ci, id_equipo: 5 })),
+  ],
+  goles: [ // { id_gol, id_partido, ci_jugador, minuto, autogol }
+    { id_gol: 1, id_partido: 10, ci_jugador: '45000001', minuto: 10, autogol: false },
+    { id_gol: 2, id_partido: 10, ci_jugador: '45005037', minuto: 25, autogol: false },
+    { id_gol: 3, id_partido: 10, ci_jugador: '45000001', minuto: 33, autogol: false },
+    { id_gol: 4, id_partido: 10, ci_jugador: '45005074', minuto: 41, autogol: false },
+    { id_gol: 5, id_partido: 10, ci_jugador: '45000112', minuto: 52, autogol: true },
+  ],
+  tarjetas: [ // { id_tarjeta, id_partido, ci_jugador, minuto, color }
+    { id_tarjeta: 1, id_partido: 10, ci_jugador: '45005111', minuto: 18, color: 'amarilla' },
+    { id_tarjeta: 2, id_partido: 10, ci_jugador: '45000075', minuto: 47, color: 'roja' },
+  ],
   sanciones: [
     { id_sancion: 1, ci_jugador: '45000149', id_torneo: 1, motivo: 'roja', numero_fecha_inicio: 4,
       cantidad_fechas: 1, id_tarjeta: null },

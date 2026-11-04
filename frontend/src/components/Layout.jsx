@@ -4,6 +4,7 @@ import { ADMIN, PLANILLERO, useAuth } from '../auth.jsx'
 // Opciones del menú y qué roles las ven
 const MENU = [
   { ruta: '/', texto: 'Inicio', roles: [ADMIN, PLANILLERO] },
+  { ruta: '/partidos', texto: 'Partidos', roles: [ADMIN, PLANILLERO] },
   { ruta: '/torneos', texto: 'Torneos', roles: [ADMIN] },
   { ruta: '/jugadores', texto: 'Jugadores', roles: [ADMIN] },
   { ruta: '/complejos', texto: 'Complejos', roles: [ADMIN] },
@@ -15,8 +16,8 @@ export default function Layout() {
 
   return (
     <>
-      <header className="container">
-        <nav>
+      <header>
+        <nav className="container">
           <ul>
             <li>
               <strong>Torneo Fútbol 5</strong>
@@ -25,7 +26,7 @@ export default function Layout() {
           <ul>
             {MENU.filter((opcion) => opcion.roles.includes(usuario.rol)).map((opcion) => (
               <li key={opcion.ruta}>
-                <NavLink to={opcion.ruta} end>
+                <NavLink to={opcion.ruta} end={opcion.ruta === '/'}>
                   {opcion.texto}
                 </NavLink>
               </li>

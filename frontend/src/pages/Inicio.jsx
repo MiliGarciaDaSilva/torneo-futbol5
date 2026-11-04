@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ADMIN, useAuth } from '../auth.jsx'
 
 export default function Inicio() {
@@ -5,12 +6,15 @@ export default function Inicio() {
 
   return (
     <>
-      <h2>Bienvenido</h2>
+      <h2>Inicio</h2>
       <p>
-        Entraste como <strong>{usuario.rol}</strong>.{' '}
+        Entraste como {usuario.rol}.{' '}
         {usuario.rol === ADMIN
-          ? 'Podés gestionar toda la información del torneo desde el menú.'
-          : 'Podés registrar las planillas, goles y tarjetas de los partidos.'}
+          ? 'Desde el menú podés gestionar todo el torneo.'
+          : 'Podés registrar las planillas, los goles y las tarjetas de los partidos.'}
+      </p>
+      <p>
+        <Link to="/partidos">Ver los partidos</Link>
       </p>
     </>
   )

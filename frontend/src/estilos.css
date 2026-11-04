@@ -1,18 +1,283 @@
-/* Pico.css ya le da estilo a formularios, tablas y botones; acá van solo los retoques */
+/* Estilo: pizarra de cancha. Pico.css pone la base (formularios, tablas, botones); acá se le cambian los colores,
+   la letra y los detalles. Reglas que seguimos: verde oscuro de pizarrón, tiza como único color de acento, bordes
+   finos en vez de sombras, esquinas casi rectas y nada de etiquetas redondas. Los números van en letra monoespaciada
+   y el marco de madera es de la planilla. */
+
+:root:not([data-theme='dark']) {
+  color-scheme: dark;
+  --pico-font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  --pico-font-family-monospace: 'IBM Plex Mono', ui-monospace, monospace;
+  --pico-border-radius: 2px;
+  --pico-form-element-spacing-vertical: 0.5rem;
+  --pico-form-element-spacing-horizontal: 0.75rem;
+
+  --pico-background-color: #14231a;
+  --pico-color: #e9ede3;
+  --pico-muted-color: #9fb2a4;
+  --pico-muted-border-color: #36503f;
+  --pico-h1-color: #e9ede3;
+  --pico-h2-color: #e9ede3;
+  --pico-h3-color: #e9ede3;
+  --pico-h4-color: #e9ede3;
+  --pico-h5-color: #e9ede3;
+  --pico-h6-color: #e9ede3;
+
+  --pico-primary: #f1e7a0;
+  --pico-primary-background: #eef1e8;
+  --pico-primary-border: #eef1e8;
+  --pico-primary-underline: rgb(241 231 160 / 0.4);
+  --pico-primary-hover: #fff6bd;
+  --pico-primary-hover-background: #fff6bd;
+  --pico-primary-hover-border: #fff6bd;
+  --pico-primary-hover-underline: #fff6bd;
+  --pico-primary-focus: rgb(241 231 160 / 0.3);
+  --pico-primary-inverse: #14231a;
+
+  --pico-secondary: #9fb2a4;
+  --pico-secondary-underline: rgb(159 178 164 / 0.4);
+  --pico-secondary-hover: #e9ede3;
+  --pico-secondary-focus: rgb(159 178 164 / 0.3);
+
+  --pico-form-element-background-color: #1b3326;
+  --pico-form-element-active-background-color: #1b3326;
+  --pico-form-element-selected-background-color: #1b3326;
+  --pico-form-element-color: #eef1e8;
+  --pico-form-element-placeholder-color: #9fb2a4;
+  --pico-form-element-border-color: #7f9a87;
+  --pico-form-element-active-border-color: #f1e7a0;
+  --pico-form-element-focus-color: rgb(241 231 160 / 0.3);
+
+  --pico-switch-background-color: #53695a;
+  --pico-switch-checked-background-color: #f1e7a0;
+  --pico-switch-color: #eef1e8;
+
+  --pico-card-background-color: #1b3326;
+  --pico-card-border-color: #36503f;
+  --pico-table-border-color: #36503f;
+  --pico-del-color: #f19a8b;
+
+  --pico-icon-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e9ede3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  --pico-icon-checkbox: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23eef1e8' stroke-width='2'%3E%3Cpath d='M3 3l10 10M13 3L3 13'/%3E%3C/svg%3E");
+
+  --pico-box-shadow: none;
+  --pico-card-box-shadow: none;
+  --pico-button-box-shadow: none;
+  --pico-button-hover-box-shadow: none;
+}
+
+/* Títulos con letra de tablero */
+h2,
+h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+h2 {
+  font-size: 2.1rem;
+  margin-bottom: 1.25rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+  margin: 2rem 0 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px dashed rgb(238 241 232 / 0.4);
+}
+
+label {
+  font-size: 0.88rem;
+  font-weight: 500;
+}
 
 .error {
   color: var(--pico-del-color);
+  font-size: 0.9rem;
 }
 
+/* Un poco más ancho que lo normal de Pico, para que entren las tablas con muchas columnas */
+main.container,
+header nav.container {
+  max-width: 1200px;
+  padding-inline: 1.5rem;
+}
+
+/* Barra de arriba: ocupa todo el ancho y abajo lleva el canto de madera del pizarrón */
+body > header {
+  border-bottom: 6px solid #7a5a37;
+  margin-bottom: 2rem;
+}
+
+header nav strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+header nav a {
+  text-decoration: none;
+  color: var(--pico-muted-color);
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding-inline: 0.25rem;
+}
+
+header nav a:hover {
+  color: var(--pico-color);
+}
+
+header nav a[aria-current='page'] {
+  color: var(--pico-color);
+  border-bottom-color: var(--pico-primary);
+}
+
+header nav button {
+  margin: 0;
+}
+
+/* Botones: el principal es tiza llena con letra de tablero; el secundario es solo borde */
+button,
+[type='submit'] {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+form [type='submit'] {
+  width: auto;
+}
+
+button.secondary,
+button.secondary:hover,
+button.secondary:focus {
+  background: transparent;
+  border: 1px solid #7f9a87;
+  color: var(--pico-color);
+}
+
+button.secondary:hover {
+  border-color: var(--pico-color);
+}
+
+/* Acciones dentro de una tabla: texto subrayado, no botones */
+td button,
+td button.secondary,
+td button.contrast,
+td a {
+  display: inline;
+  width: auto;
+  margin: 0 1rem 0 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--pico-primary);
+  font-family: var(--pico-font-family);
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: underline;
+  text-decoration-color: var(--pico-primary-underline);
+  text-underline-offset: 3px;
+}
+
+td button:last-child {
+  margin-right: 0;
+}
+
+td button:hover,
+td button.secondary:hover,
+td button.contrast:hover,
+td button:focus,
+td a:hover {
+  background: none;
+  border: 0;
+  color: var(--pico-primary-hover);
+  text-decoration-color: currentcolor;
+}
+
+td button.contrast,
+td button.contrast:hover {
+  color: var(--pico-del-color);
+}
+
+/* Casillas con una X de tiza y esquinas rectas */
+input[type='checkbox']:not([role='switch']) {
+  border-radius: 0;
+  border: 1px solid #a9bfae;
+  background-color: transparent;
+}
+
+input[type='checkbox']:not([role='switch']):checked,
+input[type='checkbox']:not([role='switch']):checked:focus {
+  border-color: #eef1e8;
+  background-color: transparent;
+}
+
+input,
+select {
+  border-radius: 0;
+}
+
+/* Tablas: sin rayas, solo líneas finas; los números a la derecha y en monoespaciada */
+table {
+  font-size: 0.9rem;
+}
+
+thead th {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--pico-muted-color);
+  border-bottom: 1px solid #6f8a77;
+}
+
+th,
+td {
+  padding: 0.5rem 0.5rem;
+}
+
+tbody tr:hover {
+  background: rgb(255 255 255 / 0.04);
+}
+
+.ranking tbody tr:first-child td {
+  font-weight: 600;
+}
+
+/* Fechas, números y acciones no se parten en dos renglones; el texto largo sí */
+.num,
+.fecha,
+td:has(> button),
+td:has(> a) {
+  white-space: nowrap;
+}
+
+.num {
+  text-align: right;
+  font-family: var(--pico-font-family-monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pantalla de entrada: una pizarra chica con marco */
 .login {
   max-width: 420px;
-  padding-top: 10vh;
+  padding-top: 12vh;
 }
 
-td button {
-  padding: 0.25rem 0.6rem;
-  margin: 0 0.25rem 0 0;
-  font-size: 0.85rem;
+.login article {
+  padding: 2rem;
+  border: 12px solid #7a5a37;
+  border-radius: 3px;
+  outline: 1px solid #4a361f;
+  background: #1f3d2b;
+  box-shadow: inset 0 0 60px rgb(0 0 0 / 0.35);
+}
+
+.login h2 {
+  font-size: 1.8rem;
 }
 
 /* Campos del formulario genérico: se acomodan solos en columnas según el ancho */
@@ -35,5 +300,279 @@ td button {
 }
 
 .filtros label {
-  min-width: 220px;
+  flex: 1 1 160px;
+  max-width: 340px;
+}
+
+fieldset[disabled] {
+  opacity: 0.6;
+}
+
+/* ---------- Planilla: el pizarrón con marco de madera ---------- */
+.pizarra {
+  --tinta: #eef1e8;
+  --papel: #1f3d2b;
+  --pico-form-element-background-color: var(--papel);
+  --pico-form-element-active-background-color: var(--papel);
+  --pico-form-element-border-color: #a9bfae;
+  max-width: 880px;
+  padding: 1.75rem 2.25rem 2.25rem;
+  border: 12px solid #7a5a37;
+  border-radius: 3px;
+  outline: 1px solid #4a361f;
+  background: var(--papel);
+  box-shadow: inset 0 0 60px rgb(0 0 0 / 0.35);
+  color: var(--tinta);
+  text-shadow: 0 0 1px rgb(255 255 255 / 0.35);
+}
+
+.pizarra-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px dashed rgb(238 241 232 / 0.5);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Cuadros como los de un formulario: la etiqueta chica arriba y el dato abajo */
+.pizarra-datos {
+  display: grid;
+  grid-template-columns: 0.6fr 1fr 1.2fr 2fr;
+  margin: 0 0 1.5rem;
+}
+
+.pizarra-datos div {
+  padding: 0.35rem 0.6rem 0.5rem;
+  border: 1px dashed rgb(238 241 232 / 0.55);
+  margin-left: -1px;
+}
+
+.pizarra-datos dt {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pico-muted-color);
+}
+
+.pizarra-datos dd {
+  margin: 0;
+  font-family: var(--pico-font-family-monospace);
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+/* La línea del medio y el círculo central de la cancha, dibujados con tiza detrás del marcador */
+.marcador {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  border: 2px solid rgb(238 241 232 / 0.85);
+  margin-bottom: 1rem;
+  background:
+    linear-gradient(rgb(238 241 232 / 0.2), rgb(238 241 232 / 0.2)) center / 2px 100% no-repeat,
+    radial-gradient(circle at center, transparent 0 50px, rgb(238 241 232 / 0.2) 50px 52px, transparent 52px);
+}
+
+.marcador .equipo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.marcador .visitante {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.marcador .goles {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4.6rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Marcas de tiza: estado del partido y avisos cortos */
+.sellos {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sello {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border: 2px solid currentcolor;
+  border-radius: 45% / 80%;
+  color: var(--pico-del-color);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.sello.tinta {
+  color: var(--pico-primary);
+}
+
+.sello.chico {
+  margin-left: auto;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.aviso {
+  font-style: italic;
+  color: var(--pico-muted-color);
+  margin-bottom: 1rem;
+}
+
+.pizarra h3 {
+  border-bottom-color: rgb(238 241 232 / 0.55);
+}
+
+.pizarra .camiseta-icono path,
+.camiseta-icono path {
+  stroke: #eef1e8;
+}
+
+.camiseta-icono {
+  flex: none;
+}
+
+.pizarra-firma {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-top: 3rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pizarra-firma .linea {
+  flex: 0 1 18rem;
+  padding: 0 0.5rem 0.15rem;
+  border-bottom: 1px solid var(--tinta);
+  font-family: var(--pico-font-family-monospace);
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.dos-columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.plantel h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.plantel label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  font-size: 0.93rem;
+  font-weight: 400;
+}
+
+.plantel input[type='checkbox'] {
+  margin: 0;
+  align-self: center;
+}
+
+/* El número de camiseta va grande, como en la espalda */
+.plantel .camiseta {
+  width: 2rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  text-align: right;
+}
+
+.lista-hechos {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.lista-hechos li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  font-size: 0.93rem;
+}
+
+.lista-hechos .minuto {
+  display: inline-block;
+  width: 2.5rem;
+  text-align: right;
+  color: var(--pico-muted-color);
+}
+
+.lista-hechos button:hover,
+.lista-hechos button:focus {
+  background: none;
+  color: var(--pico-del-color);
+  text-decoration-color: currentcolor;
+}
+
+.lista-hechos button {
+  margin: 0 0 0 auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--pico-del-color);
+  font-family: var(--pico-font-family);
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  width: auto;
+}
+
+/* Las tarjetas sí llevan su color: es lo que son */
+.tarjeta {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.9rem;
+  align-self: center;
+  border-radius: 1px;
+}
+
+.tarjeta.amarilla {
+  background: #e3b505;
+}
+
+.tarjeta.roja {
+  background: #c0392b;
 }

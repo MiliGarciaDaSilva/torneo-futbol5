@@ -24,6 +24,9 @@ const REPORTES = [
   { clave: 'local-vs-visitante', titulo: 'Rendimiento de local y de visitante', porTorneo: true },
 ]
 
+// Los reportes que son una tabla de posiciones: se muestran numerados
+const RANKINGS = ['posiciones', 'goleadores', 'fair-play']
+
 export default function Reportes() {
   const [clave, setClave] = useState(REPORTES[0].clave)
   const [torneo, setTorneo] = useState(null)
@@ -52,7 +55,7 @@ export default function Reportes() {
       </div>
 
       <h3>{reporte.titulo}</h3>
-      {error ? <p className="error">{error}</p> : <Tabla filas={datos.map((fila) => sinIds(fila, reporte.porTorneo))} />}
+      {error ? <p className="error">{error}</p> : <Tabla filas={datos.map((fila) => sinIds(fila, reporte.porTorneo))} numerar={RANKINGS.includes(clave)} />}
     </>
   )
 }
