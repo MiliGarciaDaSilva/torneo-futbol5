@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import auth, config
 from app.errores import error_mysql
-from app.routers import catalogos, complejos, partidos, planillas, torneos
+from app.routers import canchas, catalogos, complejos, equipos, jugadores, partidos, planillas, reportes, sanciones, torneos
 
 app = FastAPI(title="Torneo Interfacultades de Fútbol 5")
 
@@ -22,6 +22,11 @@ app.include_router(complejos.router)
 app.include_router(partidos.router)
 app.include_router(planillas.router)
 app.include_router(torneos.router)
+app.include_router(jugadores.router)
+app.include_router(equipos.router)
+app.include_router(canchas.router)
+app.include_router(sanciones.router)
+app.include_router(reportes.router)
 # Cada router nuevo se agrega acá (jugadores, equipos, partidos, planillas, reportes, ...)
 
 

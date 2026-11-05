@@ -16,17 +16,20 @@ WHERE p.estado IN ('programado', 'jugado')
 GROUP BY t.id_turno, t.hora_inicio, t.hora_fin
 ORDER BY cantidad_partidos DESC;
 
--- Porcentaje de partidos por estado
+-- Porcentaje de partidos por estado, dentro de cada torneo
+-- (el porcentaje se calcula sobre el total de partidos de ese torneo, no de todos los torneos)
 CREATE VIEW reporte_porcentaje_estados AS
-SELECT estado,
+SELECT t.id_torneo, t.nombre AS torneo, p.estado,
        COUNT(*) AS cantidad,
-       ROUND(COUNT(*) * 100 / (SELECT COUNT(*) FROM partido), 2) AS porcentaje
-FROM partido
-GROUP BY estado;
+       ROUND(COUNT(*) * 100 / (SELECT COUNT(*) FROM partido p2 WHERE p2.id_torneo = t.id_torneo), 2) AS porcentaje
+FROM partido p
+JOIN torneo t ON t.id_torneo = p.id_torneo
+GROUP BY t.id_torneo, t.nombre, p.estado
+ORDER BY t.id_torneo, cantidad DESC;
 
 -- Promedio de goles por fecha
 CREATE VIEW reporte_promedio_goles_por_fecha AS
-SELECT t.nombre AS torneo, p.numero_fecha,
+SELECT t.id_torneo, t.nombre AS torneo, p.numero_fecha,
        COUNT(DISTINCT p.id_partido) AS partidos_jugados,
        COUNT(g.id_gol) AS goles,
        ROUND(COUNT(g.id_gol) / COUNT(DISTINCT p.id_partido), 2) AS promedio_goles
