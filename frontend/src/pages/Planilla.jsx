@@ -50,6 +50,7 @@ export default function Planilla() {
 
   // Los formularios muestran ellos mismos el error, por eso acá no se atrapa
   async function agregar(ruta, valores) {
+    setError('')
     await api(`${base}/${ruta}`, { method: 'POST', body: valores })
     recargar()
   }
