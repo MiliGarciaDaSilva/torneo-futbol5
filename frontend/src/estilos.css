@@ -304,6 +304,12 @@ td:has(> a) {
   max-width: 340px;
 }
 
+/* El nombre del torneo es largo y lo que lo distingue (año y semestre) va al final */
+.filtros .filtro-torneo {
+  flex-basis: 380px;
+  max-width: 480px;
+}
+
 fieldset[disabled] {
   opacity: 0.6;
 }

@@ -23,6 +23,9 @@ const db = {
   torneos: [
     { id_torneo: 1, nombre: 'Torneo Interfacultades de Fútbol 5', anio: 2026, semestre: 2,
       fecha_inicio: '2026-09-07', fecha_fin: '2026-11-27', estado: 'en curso' },
+    // Un torneo en inscripción, para poder probar la carga de equipos y planteles
+    { id_torneo: 2, nombre: 'Torneo Interfacultades de Fútbol 5', anio: 2027, semestre: 1,
+      fecha_inicio: '2027-03-08', fecha_fin: '2027-06-25', estado: 'inscripcion' },
   ],
   jugadores: [
     ['45000001', 'Cristiano', 'Ronaldo', '2003-03-13', 1, 'grado'],

@@ -6,6 +6,7 @@ const MENU = [
   { ruta: '/', texto: 'Inicio', roles: [ADMIN, PLANILLERO] },
   { ruta: '/partidos', texto: 'Partidos', roles: [ADMIN, PLANILLERO] },
   { ruta: '/torneos', texto: 'Torneos', roles: [ADMIN] },
+  { ruta: '/equipos', texto: 'Equipos', roles: [ADMIN] },
   { ruta: '/jugadores', texto: 'Jugadores', roles: [ADMIN] },
   { ruta: '/complejos', texto: 'Complejos', roles: [ADMIN] },
   { ruta: '/reportes', texto: 'Reportes', roles: [ADMIN] },

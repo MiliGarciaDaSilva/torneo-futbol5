@@ -12,7 +12,7 @@ export default function ElegirTorneo({ valor, onCambio }) {
   }, [valor, torneos, onCambio])
 
   return (
-    <label>
+    <label className="filtro-torneo">
       Torneo
       <select value={valor ?? ''} onChange={(e) => onCambio(Number(e.target.value))}>
         {torneos.map((t) => (

@@ -4,7 +4,9 @@ import { useState } from 'react'
 // si falta algo o está mal escrito.
 // campos: [{ nombre, etiqueta, tipo, requerido, opciones, soloAlta: _soloAlta, ...atributos }]
 //   tipo: 'text' (por defecto), 'email', 'number', 'date', 'select' o 'checkbox'
-//   opciones (select): [{ valor, texto }]
+//   opciones (select): [{ valor, texto }], o una función (valores) => [{ valor, texto }] cuando las opciones dependen
+//     de lo que se eligió en otro campo (por ejemplo el capitán según la facultad). Si el otro campo cambia y el valor
+//     que había ya no está entre las opciones, se borra.
 //   soloAlta: no se puede cambiar al editar (por ejemplo la cédula, que es la clave)
 //   lo demás (maxLength, min, max, pattern, title, ...) se pasa tal cual al input
 // inicial: valores de lo que se edita; sin inicial es un alta (al editar aparece el botón Cancelar → onCancelar).
@@ -22,9 +24,18 @@ export default function Formulario({ campos, inicial, onGuardar, onCancelar, tex
     else if (campo.tipo === 'number') valor = valor === '' ? '' : Number(valor)
     else if (campo.tipo === 'select') {
       // El select devuelve texto: buscamos la opción para conservar el tipo (los id son números)
-      valor = campo.opciones.find((o) => String(o.valor) === valor)?.valor ?? ''
+      valor = opcionesDe(campo, valores).find((o) => String(o.valor) === valor)?.valor ?? ''
     }
-    setValores({ ...valores, [campo.nombre]: valor })
+    const nuevos = { ...valores, [campo.nombre]: valor }
+    if (campo.tipo === 'select') {
+      for (const otro of campos) {
+        const depende = otro !== campo && otro.tipo === 'select' && typeof otro.opciones === 'function'
+        if (depende && !opcionesDe(otro, nuevos).some((o) => o.valor === nuevos[otro.nombre])) {
+          nuevos[otro.nombre] = ''
+        }
+      }
+    }
+    setValores(nuevos)
   }
 
   async function enviar(e) {
@@ -48,6 +59,7 @@ export default function Formulario({ campos, inicial, onGuardar, onCancelar, tex
           <Campo
             key={campo.nombre}
             campo={campo}
+            opciones={opcionesDe(campo, valores)}
             valor={valores[campo.nombre]}
             bloqueado={editando && campo.soloAlta}
             onChange={(e) => cambiar(campo, e)}
@@ -67,8 +79,8 @@ export default function Formulario({ campos, inicial, onGuardar, onCancelar, tex
   )
 }
 
-function Campo({ campo, valor, bloqueado, onChange }) {
-  const { nombre, etiqueta, tipo = 'text', requerido, opciones, soloAlta: _soloAlta, ...atributos } = campo
+function Campo({ campo, opciones, valor, bloqueado, onChange }) {
+  const { nombre, etiqueta, tipo = 'text', requerido, opciones: _opciones, soloAlta: _soloAlta, ...atributos } = campo
 
   if (tipo === 'checkbox') {
     return (
@@ -111,6 +123,11 @@ function Campo({ campo, valor, bloqueado, onChange }) {
       />
     </label>
   )
+}
+
+// Las opciones de un desplegable: una lista fija o una función de los valores actuales del formulario
+function opcionesDe(campo, valores) {
+  return typeof campo.opciones === 'function' ? campo.opciones(valores) : (campo.opciones ?? [])
 }
 
 // Solo los campos del formulario (la fila puede traer más, como el nombre de la facultad), vacíos si no hay fila

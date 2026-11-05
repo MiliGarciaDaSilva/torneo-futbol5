@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { ADMIN, useAuth } from './auth.jsx'
 import Layout from './components/Layout.jsx'
 import Complejos from './pages/Complejos.jsx'
+import Equipos from './pages/Equipos.jsx'
 import Inicio from './pages/Inicio.jsx'
 import Jugadores from './pages/Jugadores.jsx'
 import Login from './pages/Login.jsx'
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="partidos" element={<Partidos />} />
         <Route path="partidos/:id/planilla" element={<Planilla />} />
         <Route path="torneos" element={<SoloAdmin><Torneos /></SoloAdmin>} />
+        <Route path="equipos" element={<SoloAdmin><Equipos /></SoloAdmin>} />
         <Route path="jugadores" element={<SoloAdmin><Jugadores /></SoloAdmin>} />
         <Route path="complejos" element={<SoloAdmin><Complejos /></SoloAdmin>} />
         <Route path="reportes" element={<SoloAdmin><Reportes /></SoloAdmin>} />
