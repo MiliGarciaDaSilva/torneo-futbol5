@@ -9,6 +9,8 @@ const MENU = [
   { ruta: '/equipos', texto: 'Equipos', roles: [ADMIN] },
   { ruta: '/jugadores', texto: 'Jugadores', roles: [ADMIN] },
   { ruta: '/complejos', texto: 'Complejos', roles: [ADMIN] },
+  { ruta: '/canchas', texto: 'Canchas', roles: [ADMIN] },
+  { ruta: '/sanciones', texto: 'Sanciones', roles: [ADMIN] },
   { ruta: '/reportes', texto: 'Reportes', roles: [ADMIN] },
 ]
 
