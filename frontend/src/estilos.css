@@ -482,7 +482,7 @@ fieldset[disabled] {
 
 .dos-columnas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: 2rem;
 }
 
@@ -581,4 +581,104 @@ fieldset[disabled] {
 
 .tarjeta.roja {
   background: #c0392b;
+}
+
+/* ---------- Pantalla chica (celular): menos márgenes, menú que se acomoda y planilla más compacta ---------- */
+@media (max-width: 720px) {
+  main.container,
+  header nav.container {
+    padding-inline: 1rem;
+  }
+
+  body > header {
+    margin-bottom: 1rem;
+  }
+
+  header nav,
+  header nav ul {
+    flex-wrap: wrap;
+  }
+
+  header nav strong {
+    white-space: nowrap;
+  }
+
+  header nav li {
+    padding-block: 0.25rem;
+  }
+
+  h2 {
+    font-size: 1.7rem;
+  }
+
+  .login {
+    padding-top: 4vh;
+  }
+
+  .login article {
+    padding: 1.25rem;
+    border-width: 8px;
+  }
+
+  .filtros label,
+  .filtros .filtro-torneo {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .pizarra {
+    padding: 1rem;
+    border-width: 8px;
+  }
+
+  .pizarra-cabecera {
+    flex-wrap: wrap;
+    font-size: 1rem;
+  }
+
+  .pizarra-datos {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .pizarra-datos div {
+    margin-top: -1px;
+  }
+
+  .pizarra-datos dd {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .marcador {
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .marcador .equipo {
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 1.15rem;
+    text-align: center;
+  }
+
+  .marcador .visitante {
+    justify-content: center;
+  }
+
+  .marcador .goles {
+    font-size: 3rem;
+  }
+
+  .sellos {
+    flex-wrap: wrap;
+  }
+
+  .pizarra-firma {
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .pizarra-firma .linea {
+    flex-basis: 100%;
+  }
 }

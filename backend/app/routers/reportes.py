@@ -20,6 +20,7 @@ REPORTES = {
     "turnos":                 ("reporte_turnos_mas_usados",         False, "cantidad_partidos DESC, hora_inicio",   None),
     "jugadores-por-facultad": ("reporte_jugadores_por_facultad",    False, "cantidad_jugadores DESC, facultad",     None),
     "jugadores-por-tipo":     ("reporte_jugadores_por_tipo",        False, "cantidad_jugadores DESC",               None),
+    "jugadores-facultad-tipo": ("reporte_jugadores_por_facultad_y_tipo", False, "total DESC, facultad",            None),
     "nunca-en-planilla":      ("reporte_nunca_en_planilla",         True,  "equipo, apellido",                      None),
     "sanciones-por-equipo":   ("reporte_sanciones_por_equipo",      True,  "cantidad_sanciones DESC, equipo",       None),
     "sanciones-por-motivo":   ("reporte_sanciones_por_motivo",      True,  "cantidad_sanciones DESC",               None),

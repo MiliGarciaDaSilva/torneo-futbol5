@@ -14,6 +14,7 @@ const REPORTES = [
   { clave: 'turnos', titulo: 'Turnos más usados', porTorneo: false },
   { clave: 'jugadores-por-facultad', titulo: 'Jugadores por facultad', porTorneo: false },
   { clave: 'jugadores-por-tipo', titulo: 'Jugadores por tipo', porTorneo: false },
+  { clave: 'jugadores-facultad-tipo', titulo: 'Jugadores por facultad y tipo', porTorneo: false },
   { clave: 'nunca-en-planilla', titulo: 'Jugadores que nunca estuvieron en una planilla', porTorneo: true },
   { clave: 'sanciones-por-equipo', titulo: 'Sanciones por equipo', porTorneo: true },
   { clave: 'sanciones-por-motivo', titulo: 'Sanciones por motivo', porTorneo: true },

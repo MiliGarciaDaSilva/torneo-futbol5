@@ -83,10 +83,13 @@ def modificar(id_equipo: int, datos: EquipoIn, db=Depends(get_db)):
 
 @router.delete("/{id_equipo}", status_code=204, dependencies=solo_admin)
 def borrar(id_equipo: int, db=Depends(get_db)):
-    # Si tiene plantel o partidos, la clave foránea no deja borrarlo (409)
-    _, filas = db.ejecutar("DELETE FROM equipo WHERE id_equipo = %s", (id_equipo,))
-    if filas == 0:
-        raise HTTPException(404, "No existe ese equipo")
+    obtener(id_equipo, db)
+    # El plantel tiene clave foránea al equipo, así que se borra primero. Va todo en una transacción:
+    # si el torneo ya no está en inscripción (trigger) o el equipo tiene partidos (clave foránea),
+    # falla y el plantel queda como estaba
+    with db.transaccion():
+        db.ejecutar("DELETE FROM equipo_jugador_torneo WHERE id_equipo = %s", (id_equipo,))
+        db.ejecutar("DELETE FROM equipo WHERE id_equipo = %s", (id_equipo,))
 
 
 # ---------- Plantel ----------

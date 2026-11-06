@@ -11,6 +11,18 @@ FROM jugador
 GROUP BY tipo
 ORDER BY cantidad_jugadores DESC;
 
+CREATE VIEW reporte_jugadores_por_facultad_y_tipo AS
+SELECT f.nombre AS facultad,
+       COUNT(CASE WHEN j.tipo = 'grado' THEN 1 END) AS grado,
+       COUNT(CASE WHEN j.tipo = 'posgrado' THEN 1 END) AS posgrado,
+       COUNT(CASE WHEN j.tipo = 'docente' THEN 1 END) AS docente,
+       COUNT(CASE WHEN j.tipo = 'funcionario' THEN 1 END) AS funcionario,
+       COUNT(j.ci) AS total
+FROM facultad f
+LEFT JOIN jugador j ON j.id_facultad = f.id_facultad
+GROUP BY f.id_facultad, f.nombre
+ORDER BY total DESC, f.nombre;
+
 CREATE VIEW reporte_nunca_en_planilla AS
 SELECT t.id_torneo, t.nombre AS torneo, e.nombre AS equipo, j.ci, j.nombre, j.apellido, j.tipo
 FROM equipo_jugador_torneo ej
