@@ -4,7 +4,7 @@ from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.auth import ADMIN, PLANILLERO, get_db, requiere_rol
+from app.auth import ADMIN, PLANILLERO, get_db, requiere_rol, usuario_actual
 
 router = APIRouter(prefix="/partidos", tags=["partidos"])
 solo_admin = [Depends(requiere_rol(ADMIN))]
@@ -101,8 +101,11 @@ def modificar(id_partido: int, datos: PartidoIn, db=Depends(get_db)):
     return obtener(id_partido, db)
 
 
-@router.patch("/{id_partido}/estado", dependencies=solo_admin)
-def cambiar_estado(id_partido: int, datos: EstadoIn, db=Depends(get_db)):
+@router.patch("/{id_partido}/estado", dependencies=logueados)
+def cambiar_estado(id_partido: int, datos: EstadoIn, usuario=Depends(usuario_actual), db=Depends(get_db)):
+    # El admin cambia a cualquier estado; el planillero solo marca como jugado un partido que ya se jugó
+    if usuario["rol"] == PLANILLERO and datos.estado != "jugado":
+        raise HTTPException(403, "El planillero solo puede marcar un partido como jugado")
     obtener(id_partido, db)
     db.ejecutar("UPDATE partido SET estado = %s WHERE id_partido = %s", (datos.estado, id_partido))
     return obtener(id_partido, db)

@@ -1,20 +1,25 @@
-// Lista de partidos con filtros. De acá se entra a la planilla de cada partido jugado.
+// Lista de partidos con filtros. De acá se entra a la planilla de cada partido jugado,
+// y los partidos que ya pasaron se marcan como jugados (el planillero y el admin).
 // (El alta, la modificación y el cambio de estado de partidos del admin se suman en esta misma pantalla.)
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { PLANILLERO, useAuth } from '../auth.jsx'
+import { api } from '../api.js'
 import ElegirTorneo from '../components/ElegirTorneo.jsx'
 import Tabla from '../components/Tabla.jsx'
 import { useDatos } from '../useDatos.js'
 
 const ESTADOS = ['programado', 'jugado', 'postergado', 'cancelado']
 
+// El turno ya terminó; la base vuelve a controlarlo al marcar el partido como jugado
+function yaPaso(partido) {
+  return new Date(`${partido.dia}T${partido.hora_fin}`) <= new Date()
+}
+
 export default function Partidos() {
-  const { usuario } = useAuth()
   const [torneo, setTorneo] = useState(null)
-  // El planillero solo trabaja con partidos jugados, así que arranca viendo esos
-  const [estado, setEstado] = useState(usuario.rol === PLANILLERO ? 'jugado' : '')
+  const [estado, setEstado] = useState('')
   const [fecha, setFecha] = useState('')
+  const [errorAccion, setErrorAccion] = useState('')
 
   let ruta = null // espera a que haya un torneo elegido
   if (torneo) {
@@ -23,7 +28,17 @@ export default function Partidos() {
     if (fecha) filtros.set('numero_fecha', fecha)
     ruta = `/partidos?${filtros}`
   }
-  const { datos: partidos, error } = useDatos(ruta)
+  const { datos: partidos, error, recargar } = useDatos(ruta)
+
+  async function marcarJugado(partido) {
+    setErrorAccion('')
+    try {
+      await api(`/partidos/${partido.id_partido}/estado`, { method: 'PATCH', body: { estado: 'jugado' } })
+      recargar()
+    } catch (err) {
+      setErrorAccion(err.message)
+    }
+  }
 
   // Primero los más recientes
   const filas = [...partidos]
@@ -53,6 +68,8 @@ export default function Partidos() {
         </label>
       </div>
 
+      {errorAccion && <p className="error">{errorAccion}</p>}
+
       {error ? (
         <p className="error">{error}</p>
       ) : (
@@ -67,7 +84,12 @@ export default function Partidos() {
             { campo: 'estado', titulo: 'Estado' },
           ]}
           filas={filas}
-          acciones={(p) => p.estado === 'jugado' && <Link to={`/partidos/${p.id_partido}/planilla`}>Planilla</Link>}
+          acciones={(p) => {
+            if (p.estado === 'jugado') return <Link to={`/partidos/${p.id_partido}/planilla`}>Planilla</Link>
+            if ((p.estado === 'programado' || p.estado === 'postergado') && yaPaso(p)) {
+              return <button onClick={() => marcarJugado(p)}>Marcar como jugado</button>
+            }
+          }}
         />
       )}
     </>
